@@ -2,21 +2,34 @@
 best <- function(state, outcome) { 
   
   ## Read outcome data
-  
-  
-  
+  myOutcomeData <- read.csv("outcome-of-care-measures.csv")
   
   ## Check that state and outcome are valid
   
+  if (outcome=="heart attack") {
   
+          print("heart attack")
+  
+          }
+  else if (outcome=="heart failure") {
+    
+          print("heart failure")
+  
+          }
+  else if (outcome=="pneumonia") {
+  
+          print("pneumonia")
+          }
+  else {print("invalid outcome")
+          }
   
   
   ## Return hospital name in that state with lowest 30-day death rate
   
   
-  
-  
 }
+  
+
 
 
 rankhospital <- function(state, outcome, num = "best") {
