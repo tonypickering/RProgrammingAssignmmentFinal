@@ -136,19 +136,77 @@ rankhospital <- function(state, outcome, num = "best") {
 rankall <- function(outcome, num = "best") {
   
   ## Read outcome data
+  myOutcomeData <- read.csv("outcome-of-care-measures.csv")
   
   
+  ## Check that NUM and outcome are valid
   
+  validoutcome <-  c("heart attack", "heart failure", "pneumonia")
   
-  ## Check that state and outcome are valid
-  
-  
+  if (is.element(outcome,  validoutcome) == FALSE)  {
+    stop("invalid outcome")
+  }
   
   
   ## For each state, find the hospital of the given rank
   ## Return a data frame with the hospital names and the ## (abbreviated) state name
+
+  ## print(paste("outcome=", outcome, "rank=", num)) #this is just test output
   
+  vars2keep<-c("State","Hospital.Name","Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack",
+               "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure","Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia")
   
+  minimyoutcome <- myOutcomeData[vars2keep]
+  minimyoutcome <-arrange(minimyoutcome,Hospital.Name)
   
+  splitmini<-split(minimyoutcome,minimyoutcome$State)
   
+  if(num=="best") {num<-"1"}
+  
+      sapply(splitmini,function(x,myrank=num) {
+  
+      if (outcome == "heart attack") {
+        
+        x$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack <- as.numeric(as.character(x$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack))
+        
+        if(num=="worst") {
+               x2 <- arrange(x,desc(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack))
+               myrank<-1
+        }
+        else {
+               x2 <- arrange(x,Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack)
+        }
+        
+      }
+      else if(outcome == "heart failure") {
+        
+        x$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure <- as.numeric(as.character(x$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure))
+        
+        if(num=="worst") {
+              x2 <- arrange(x,desc(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure))
+              myrank<-1
+        }
+        else {
+              x2 <- arrange(x,Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure)
+        }
+        
+      }
+      else if(outcome == "pneumonia") {
+        
+        x$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia <- as.numeric(as.character(x$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia))
+        
+        if(num=="worst") {
+              x2 <- arrange(x,desc(Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia))
+              myrank<-1
+        }
+        else {
+              x2 <- arrange(x,Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia)
+        }
+        
+        
+      }
+        
+    x2[as.numeric(myrank),2]
+    
+  })
 }
